@@ -25,40 +25,44 @@ app.get("/", function (req, res) {
 
 
 // your first API endpoint... 
-app.get("/api", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/api/hello", function(req, res) {
+  res.json({ greeting: 'hello API' });
 });
 
+
+app.get("/api/", (req, res)=> {
+  let date = new Date();
+  res.json({
+    "unix": date.getTime(),
+    "utc": date.toUTCString()
+  })
+
+})
+
 app.get("/api/:date", (req, res) => {
-  //console.log(req.params);
-  //onsole.log("This works");
-  console.log(req.params.date);
-  console.log(typeof(req.params.date));
-  //console.log(Date(req.params))
 
   if (new Date(req.params.date) == "Invalid Date") {
-    console.log("this is unix");
+
+    if (isNaN(parseInt(req.params.date))) {
+
+      return res.json({ error: "Invalid Date" });
+
+    }
 
     req.params.date = parseInt(req.params.date)
   }
 
 
   const presentDate = new Date(req.params.date);
-  console.log(presentDate);
 
   const utc = presentDate.toUTCString();
-  //const easternTime = presentDate.toLocaleString("en-US", {timeZone: "America/New_York"});
-
-  console.log(utc);
 
   const unix = Math.floor(presentDate.getTime())
- // const utc = easternTime.toUTCString();
-  //console.log(utc);
- 
-  //const dt = Date.parse(req.params)
+
   return res.status(200).json({
-    "unix": unix,
-    "utc": utc})
+    unix: unix,
+    utc: utc
+  })
 })
 
 
